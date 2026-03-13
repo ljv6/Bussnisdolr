@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>بوابة إدارة الأعمال مع جدول الاستحقاق</title>
+<style>
+  body { font-family: Arial, sans-serif; background:#f5f5f5; margin:0; padding:0; }
+  header { background:#34495e; color:#fff; padding:20px; text-align:center; }
+  .container { padding:20px; }
+  .card { background:#fff; border-radius:10px; box-shadow:0 2px 8px rgba(0,0,0,0.1); margin-bottom:20px; padding:15px; }
+  h2,h3 { margin-top:0; }
+  table { width:100%; border-collapse: collapse; margin-top:10px; }
+  th,td { border:1px solid #ddd; padding:8px; text-align:center; }
+  th { background:#2980b9; color:#fff; }
+  input, select { width:100%; padding:6px; margin:5px 0; }
+  button { padding:8px 12px; background:#27ae60; color:#fff; border:none; border-radius:5px; cursor:pointer; margin-top:5px; }
+  button:hover { background:#219150; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>بوابة إدارة الأعمال</h1>
+</header>
+
+<div class="container" id="businessContainer"></div>
+
+<script>
+const jsonData = `
+[
+  {
+    "name": "بزنس 1",
+    "income": 5000,
+    "expense": 2000,
+    "expensesList": [
+      {"name":"إيجار","amount":1000,"dueDate":"2026-03-20"},
+      {"name":"رواتب","amount":1000,"dueDate":"2026-03-25"}
+    ],
+    "partners":[{"name":"أحمد","role":"edit"},{"name":"ليلى","role":"view"}]
+  },
+  {
+    "name": "بزنس 2",
+    "income": 8000,
+    "expense": 3500,
+    "expensesList": [
+      {"name":"شراء منتجات","amount":2000,"dueDate":"2026-03-18"},
+      {"name":"إعلانات","amount":1500,"dueDate":"2026-03-22"}
+    ],
+    "partners":[{"name":"سامي","role":"edit"}]
+  }
+]
+`;
+
+let businesses = JSON.parse(jsonData);
+
+function daysRemaining(dueDate) {
+  const today = new Date();
+  const due = new Date(dueDate);
+  const diffTime = due - today;
+  return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+}
+
+function renderBusinesses() {
+  const container = document.getElementById('businessContainer');
+  container.innerHTML = '';
+  businesses.forEach((biz,index) => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `
+      <h2>${biz.name}</h2>
+
+      <h3>المصروفات وجدول الاستحقاق</h3>
+      <table>
+        <tr><th>اسم المصروف</th><th>المبلغ</th><th>تاريخ الاستحقاق</th><th>الأيام المتبقية</th></tr>
+        ${biz.expensesList.map(exp => `<tr>
+          <td>${exp.name}</td>
+          <td>${exp.amount}</td>
+          <td>${exp.dueDate}</td>
+          <td>${daysRemaining(exp.dueDate)}</td>
+        </tr>`).join('')}
+      </table>
+
+      <h3>الشركاء</h3>
+      <ul>
+        ${biz.partners.map(p => `<li>${p.name} - ${p.role}</li>`).join('')}
+      </ul>
+
+      <h3>الإحصائيات</h3>
+      <table>
+        <tr>
+          <th>إجمالي الدخل</th>
+          <th>إجمالي المصروف</th>
+          <th>صافي الربح</th>
+        </tr>
+        <tr>
+          <td>${biz.income}</td>
+          <td>${biz.expense}</td>
+          <td>${biz.income - biz.expense}</td>
+        </tr>
+      </table>
+    `;
+    container.appendChild(card);
+  });
+}
+
+renderBusinesses();
+</script>
+
+</body>
+</html>
