@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>بوابة إدارة الأعمال مع جدول الاستحقاق</title>
+<title>بوابة إدارة الأعمال</title>
 <style>
   body { font-family: Arial, sans-serif; background:#f5f5f5; margin:0; padding:0; }
   header { background:#34495e; color:#fff; padding:20px; text-align:center; }
@@ -24,7 +24,7 @@
 <div class="container" id="businessContainer"></div>
 
 <script>
-  // JSON للبيانات
+  // JSON داخلي للبيانات - جاهز للعمل على GitHub Pages
   const jsonData = `
   [
     {
@@ -54,17 +54,16 @@
 
   function daysRemaining(dueDate) {
     const today = new Date();
-    // تحويل التاريخ من string إلى Date بطريقة آمنة
     const parts = dueDate.split('-'); // ["YYYY","MM","DD"]
-    const due = new Date(parts[0], parts[1]-1, parts[2]); // الشهر يبدأ من 0
-    const diffTime = due.getTime() - today.getTime();
+    const due = new Date(parts[0], parts[1]-1, parts[2]);
+    const diffTime = due - today;
     return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
   }
 
   function renderBusinesses() {
     const container = document.getElementById('businessContainer');
     container.innerHTML = '';
-    businesses.forEach((biz,index) => {
+    businesses.forEach((biz) => {
       const card = document.createElement('div');
       card.className = 'card';
       card.innerHTML = `
